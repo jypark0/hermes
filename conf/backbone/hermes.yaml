@@ -1,0 +1,16 @@
+name: Hermes
+
+net:
+  _target_: src.backbone.hermes.Hermes
+  reltan_features: false
+  null_isolated: false
+  n_rings: 2
+  band_limit: 4
+  num_samples: 101
+  checkpoint: false
+  equiv_bias: true
+  message_norm: false
+  update_norm: false
+  message_dropout: false
+  update_dropout: false
+  residual: true

@@ -1,0 +1,41 @@
+# @package _global_
+
+train:
+  epochs: 100
+  batch_size: 2
+  lr: 5e-4
+
+optimizer:
+  _target_: torch.optim.Adam
+  lr: ${train.lr}
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.CosineAnnealingLR
+  T_max: ${train.epochs}
+
+# params: 157,995
+backbone:
+  net:
+    # 1 block
+    message_dims:
+      - - ${dataset.in_dim}
+        - 12
+        - 12
+        - 12
+    message_orders:
+      - - 1
+        - 2
+        - 2
+        - 2
+    update_dims:
+      - - 1
+    update_orders:
+      - - 1
+    edge_dims: ${dataset.edge_dim}
+    final_activation: false
+    node_batch_size: null
+
+model:
+  post_process_dims:
+    - 12
+    - ${dataset.out_dim}

@@ -1,0 +1,28 @@
+# @package _global_
+
+dataset:
+  name: Cahn-Hilliard
+  in_dim: ${dataset.cls.input_length}
+  edge_dim: 0
+  out_dim: 1
+  cls:
+    _target_: src.data.dataset.cahn_hilliard.CHPDEonMesh
+    root: "${work_dir}/data/cahn_hilliard"
+    pre_transform_str: ""
+    processed_dir_str: "processed_train"
+    maxT: 200
+    num_samples: 5
+    input_length: 5
+    output_length: 3
+
+loss:
+  _target_: torch.nn.MSELoss
+
+model:
+  _target_: src.run.pde.PDERegressor
+
+engine:
+  _target_: src.run.pde.PDEEngine
+  device: ${device}
+  disable_tqdm: true
+  grad_accum_steps: 1

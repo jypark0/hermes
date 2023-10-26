@@ -1,0 +1,18 @@
+# Get original working directory
+work_dir: ${hydra:runtime.cwd}
+
+seed: 1
+device: cuda
+
+batch_size: 1
+# add save_path to model at runtime
+# save_path: "${work_dir}/model_checkpoints"
+model_save_path: ???
+
+save_dir: "${work_dir}/rollouts"
+
+defaults:
+  - dataset: heat
+  - backbone: hermes
+  - dataset_backbone: ${dataset}_${backbone}
+  - _self_

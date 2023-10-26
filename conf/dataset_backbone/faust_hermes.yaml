@@ -1,0 +1,67 @@
+# @package _global_
+
+train:
+  epochs: 400
+  batch_size: 1
+  lr: 7e-3
+
+optimizer:
+  _target_: torch.optim.Adam
+  lr: ${train.lr}
+  weight_decay: 1e-5
+
+backbone:
+  net:
+    message_dims:
+      - - ${dataset.in_dim}
+        - 10
+        - 10
+      - - 10
+        - 10
+        - 10
+      - - 10
+        - 10
+        - 10
+      - - 10
+        - 10
+        - 10
+      - - 10
+        - 10
+        - 10
+    message_orders:
+      - - 0
+        - 2
+        - 2
+      - - 2
+        - 2
+        - 2
+      - - 2
+        - 2
+        - 2
+      - - 2
+        - 2
+        - 2
+      - - 2
+        - 2
+        - 2
+    update_dims:
+      - - 10
+      - - 10
+      - - 10
+      - - 10
+      - - 10
+    update_orders:
+      - - 2
+      - - 2
+      - - 2
+      - - 2
+      - - 0
+    edge_dims: ${dataset.edge_dim}
+    final_activation: true
+    node_batch_size: null
+
+model:
+  post_process_dims:
+    - 10 # rho0 only
+    - 256
+    - ${dataset.out_dim}

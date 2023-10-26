@@ -1,0 +1,32 @@
+# @package _global_
+
+dataset:
+  name: Objects
+  in_dim: 205 # pos + occupancy + orientation + actions = 3 + (num_objects + 1) + 2 + (num_objects*3)
+  edge_dim: 0
+  out_dim: 51 # (num_objects + 1)
+  cls:
+    _target_: src.data.dataset.objects.ObjectsSplitHeadsDataset
+    root: "${work_dir}/data/objects/N250_O50"
+    pre_transform_str: ""
+    processed_dir_str: "processed_train"
+    num_train: 20
+    num_test: 100
+
+loss:
+  - _target_: torch.nn.NLLLoss
+  - _target_: torch.nn.MSELoss
+
+model:
+  _target_: src.run.objects.ObjectsSplitHeads
+  post_process_dims:
+    - 16 # rho0 only
+    - ${dataset.out_dim}
+  post_process_activation:
+    _target_: torch.nn.ReLU
+
+engine:
+  _target_: src.run.objects.ObjectsSplitHeadsEngine
+  device: ${device}
+  disable_tqdm: false
+  grad_accum_steps: 1

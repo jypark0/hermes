@@ -1,0 +1,19 @@
+# Get original working directory
+work_dir: ${hydra:runtime.cwd}
+
+seed: 1
+device: cuda
+
+save_dir: "${work_dir}/model_checkpoints"
+
+wandb:
+  entity: null
+  dir: "."
+  project: ???
+  name: ${dataset.name}_${backbone.name}
+
+defaults:
+  - dataset: heat
+  - backbone: hermes
+  - dataset_backbone: ${dataset}_${backbone}
+  - _self_

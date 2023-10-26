@@ -1,0 +1,31 @@
+# @package _global_
+
+train:
+  epochs: 400
+  batch_size: 1
+  lr: 1e-2
+
+optimizer:
+  _target_: torch.optim.Adam
+  lr: ${train.lr}
+  weight_decay: 1e-5
+
+# params: 1,837,776
+backbone:
+  net:
+    # 3 blocks
+    block_dims:
+      - ${dataset.in_dim}
+      - 10
+      - 10
+      - 10
+      - 10
+    block_orders: [0, 2, 2, 2, 0] # linear layers at the end
+    final_activation: true
+    node_batch_size: null
+
+model:
+  post_process_dims:
+    - 10 # rho0 only
+    - 256
+    - ${dataset.out_dim}

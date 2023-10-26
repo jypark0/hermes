@@ -1,0 +1,25 @@
+# @package _global_
+
+train:
+  epochs: 100
+  batch_size: 1
+  lr: 5e-4
+
+optimizer:
+  _target_: torch.optim.Adam
+  lr: ${train.lr}
+  weight_decay: 1e-5
+
+# params: 30,882
+backbone:
+  net:
+    block_dims:
+      - ${dataset.in_dim}
+      - 7
+      - 7
+      - 7
+      - ${dataset.out_dim}
+    block_orders: [0, 2, 2, 2, 0]
+    final_activation: false
+    node_batch_size: null
+    n_heads: 1

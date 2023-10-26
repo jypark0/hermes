@@ -1,0 +1,30 @@
+# @package _global_
+
+dataset:
+  name: FAUST
+  in_dim: 3
+  edge_dim: 0
+  out_dim: 6890
+  cls:
+    _target_: src.data.dataset.faust.FAUST
+    root: "${work_dir}/data/FAUST"
+    pre_transform_str: ""
+    processed_dir_str: "processed_train"
+
+loss:
+  _target_: torch.nn.NLLLoss
+
+model:
+  _target_: src.run.faust.FAUSTClassifier
+  post_process_dims:
+    - 16 # needs to equal backbone.block_dims[-1]
+    - 256
+    - ${dataset.out_dim}
+  post_process_activation:
+    _target_: torch.nn.ReLU
+
+engine:
+  _target_: src.run.faust.FAUSTEngine
+  device: ${device}
+  disable_tqdm: false
+  grad_accum_steps: 1

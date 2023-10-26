@@ -1,0 +1,4 @@
+# @package _global_
+
+defaults:
+  - /dataset_backbone/wave_new_eman@_here_

@@ -1,0 +1,8 @@
+-r requirements.txt
+ipdb
+pytest
+jupyterlab
+ipywidgets
+trame
+moviepy
+seaborn

@@ -1,0 +1,15 @@
+name: EMAN
+
+net:
+  _target_: src.backbone.eman.EMAN
+  reltan_features: false
+  null_isolated: false
+  n_rings: 2
+  band_limit: 4
+  num_samples: 101
+  checkpoint: false
+  equiv_bias: true
+  regular_non_lin: true
+  batch_norm: false
+  dropout: false
+  n_heads: 2

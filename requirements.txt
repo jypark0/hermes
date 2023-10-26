@@ -1,0 +1,30 @@
+numpy
+torch==1.13.1
+--extra-index-url https://download.pytorch.org/whl/cu117
+pyg_lib
+-f https://data.pyg.org/whl/torch-1.13.1+cu117.html
+torch_scatter
+-f https://data.pyg.org/whl/torch-1.13.1+cu117.html
+torch_sparse
+-f https://data.pyg.org/whl/torch-1.13.1+cu117.html
+torch_cluster
+-f https://data.pyg.org/whl/torch-1.13.1+cu117.html
+torch_geometric
+-f https://data.pyg.org/whl/torch-1.13.1+cu117.html
+torch_spline-conv
+-f https://data.pyg.org/whl/torch-1.13.1+cu117.html
+wandb
+pytorch-ignite
+openmesh
+opt_einsum
+trimesh
+pandas
+matplotlib
+networkx
+hydra-core
+h5py
+gymnasium
+pyvista
+plyfile
+pyvistaqt
+pyqt5
