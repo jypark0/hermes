@@ -74,12 +74,12 @@ To be released soon.
 {% raw %}
 ```
 @inproceedings{
-wang2023surprising,
-title={The Surprising Effectiveness of Equivariant Models in Domains with Latent Symmetry},
-author={Dian Wang and Jung Yeon Park and Neel Sortur and Lawson L.S. Wong and Robin Walters and Robert Platt},
-booktitle={International Conference on Learning Representations},
+park2023modeling,
+title={Modeling Dynamics over Meshes with Gauge Equivariant Nonlinear Message Passing},
+author={Park, Jung Yeon and Wong, Lawson L.S. and Walters, Robin},
+booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
 year={2023},
-url={https://openreview.net/forum?id=P4MUGRM4Acu}
+url={}
 }
 ```
 {% endraw %}
