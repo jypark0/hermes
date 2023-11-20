@@ -139,8 +139,13 @@ We evaluate Hermes primarily on PDEs on meshes: 1) Heat, 2) Wave, and 3) Cahn-Hi
 
 When we generate rollouts given only initial conditions, Hermes can produce realistic predictions and predict general spatial patterns well.
 
+## Video
+<div style="text-align:center">
+  <iframe width="853" height="480" src="https://www.youtube.com/embed/2o26wIhDaro?si=NQCuh-wEoa-sbs2S" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+
 ## Code
-To be released soon.
+<https://github.com/jypark0/hermes>
 
 ## Citation
 {% raw %}
