@@ -65,26 +65,62 @@ img.rounded {
   float: center;
   width: 340px;
 }
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-container img {
+  max-width: 100%;
+  height: 300px;
+  width: auto;
+}
+
+figure {
+  text-align: center;
+}
+
+figcaption {
+  color: gray;
+}
+
+.cropped {
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.gif-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gif-container figure {
+  text-align: center;
+  margin: 10px;
+  padding: 0;
+  width: 100%;
+  height: auto;
+}
+
 </style>
 
 ## Paper
 Published at Advances in Neural Information Processing Systems 2023 (NeurIPS 2023)  
 <div class="centered-container">
-<div class="button-container">
-    <a href="https://arxiv.org/abs/2310.19589" class="button">
-        <i class="fa fa-file-pdf"></i> Paper
-    </a>
-</div>
-<div class="button-container">
-    <a href="https://openreview.net/forum?id=0eXniewIvr" class="button">
-        <i class="fas fa-comments"></i> OpenReview
-    </a>
-</div>
-<!-- <div class="button-container"> -->
-<!--     <a href="" class="button"> -->
-<!--         <i class="fa fa-code"></i> Code -->
-<!--     </a> -->
-<!-- </div> -->
+    <div class="button-container">
+        <a href="https://arxiv.org/abs/2310.19589" class="button">
+            <i class="fa fa-file-pdf"></i> Paper
+        </a>
+    </div>
+    <div class="button-container">
+        <a href="https://github.com/jypark0/hermes" class="button">
+            <i class="fa fa-code"></i> Code
+        </a>
+    </div>
 </div>
 
 <div style="width:100%; display:flex">
@@ -114,30 +150,81 @@ Northeastern University
 
 ## Idea
 This work studies the problem of predicting complex dynamics over surface meshes. 
-Previous approaches work on patches of the mesh by approximating them to be Euclidean. However, these approaches do not exploit the geometric properties of the mesh, leading to reduced performance.
 
-A key geometric aspect of a mesh is a global coordinate frame or gauge may not exist and one must define local gauges at every node.
-However, the choice of local gauge to define a local coordinate frame is arbitrary, and thus signals over the mesh should be unaffected by the choice of gauge.
-One way to express such geometric information is to specify the local gauge symmetries and explicitly incorporate equivariance to gauge transformations.
+<div class="image-container">
+    <img src="img/armadillo.png" alt="Armadillo">
+    <img src="img/urn.png" alt="Urn">
+</div> 
+Meshes are a commonly used representation of non-Euclidean manifolds. 
+Compared to other 3D representations such as point clouds or voxels, only meshes can represent both the topology and geometry of the manifold.
+
+<figure>
+    <img src="img/car.png" alt="Car" style="width:100%">
+    <figcaption> Image Source: <a href="https://su2code.github.io/">https://su2code.github.io</a></figcaption>
+</figure>
+Solving partial differential equations (PDEs), specifically over a surface, is an important task in many domains such as aerodynamics or thermodynamics.
+
+Several approaches to learn signals over meshes often reduce it to a graph, discarding important geometric information. [Verma et al., 2018](https://arxiv.org/abs/1706.05206) and [De Haan et al., 2020](https://arxiv.org/abs/2003.05425) have shown that not incorporating the intrinsic geometry of the mesh leads to reduced performance.
+
+<div class="image-container">
+    <img src="img/gauge.png" alt="Gauge" style="width:70%;height:auto">
+</div>
+A key geometric aspect of a mesh is gauge symmetry. In the above figure, let's focus on vertex $$b$$ and its neighbors. After we project the neighbors onto the tangent plane at vertex $$b$$, there is ambiguity in the choice of local reference or gauge. For example, we could choose vertex $$a$$ to be the reference neighbor and we would be able to compute the angles or orientations for the other neighbors. If we choose vertex $$d$$ as the gauge, we would obtain a different set of orientations. Since the choice of local gauge was arbitrary, networks should be independent to this choice and should therefore be equivariant to local gauge transformations. In this work, we focus on gauge equivariant neural networks.
 
 ![flavors](img/flavors.png)
-
-Gauge equivariant convolutional ([GemCNN](https://arxiv.org/abs/2003.05425)) and attentional ([EMAN](https://arxiv.org/abs/2205.10662)) methods have been previously proposed, but we find they are inadequate for modeling complex dynamics on meshes, such as solving surface partial differential equations (PDEs), which can be highly nonlinear.
+Previous works on gauge equivariant networks for meshes considered convolutional ([GemCNN](https://arxiv.org/abs/2003.05425)) and attentional ([EMAN](https://arxiv.org/abs/2205.10662)) architetures. However, in the context of modeling complex dynamics on meshes, such as solving surface PDEs, we find that they underperform.
 We propose combining gauge equivariance and nonlinear message passing and name our new architecture **Hermes**.
 
-![architecture](img/architecture.png)
+We evaluate Hermes on several domains such as surface PDEs, cloth dynamics, object interactions, and also shape correspondence. For the surface PDEs, we consider 1) Heat, 2) Wave, and 3) Cahn-Hilliard. Heat and Wave are second-order linear PDEs, while Cahn-Hilliard is a fourth-order nonlinear PDE. Cahn-Hilliard describes phase separation in a binary fluid mixture. We also test on generalization to future timesteps (<u>test time</u>), to unseen initial conditions (<u>test init</u>), and to unseen meshes (<u>test mesh</u>).
 
-Each Hermes message passing block consists of an edge and node network that uses gauge-equivariant kernels and nonlinearities.
+![quantitative_results](img/quantitative_results.png)
+Hermes outperforms convolutional and attentional counterparts significantly, and outperforms other baselines in most settings. In particular, it performs the best on the test mesh datasets, suggesting that it can learn the true dynamics function and overfits less to specific mesh geometries.
 
-We evaluate Hermes primarily on PDEs on meshes: 1) Heat, 2) Wave, and 3) Cahn-Hilliard. Heat and Wave are second-order linear PDEs, while Cahn-Hilliard is a fourth-order nonlinear PDE. Cahn-Hilliard describes phase separation in a binary fluid mixture.
+<div class="gif-container">
+    <figure>
+        <img src="img/gifs/heat_gemcnn.gif" alt="heat_gemcnn" style="width:100%;height:auto">
+        <figcaption> GemCNN</figcaption>
+    </figure>
+    <figure>
+        <img src="img/gifs/heat_eman.gif" alt="heat_eman" style="display: block">
+        <figcaption> EMAN</figcaption>
+    </figure>
+    <figure>
+        <img src="img/gifs/heat_hermes.gif" alt="heat_hermes" style="display: block">
+        <figcaption> Hermes</figcaption>
+    </figure>
+    <figure>
+        <img src="img/gifs/heat_gt.gif" alt="heat_gt" style="display: block">
+        <figcaption> Ground Truth</figcaption>
+    </figure>
+</div> 
 
-| Dataset | GemCNN | EMAN | Hermes | Ground Truth |
-|---------|--------|------|--------|--------------|
-| Heat (T+50)        | ![](img/Heat_armadillo_GemCNN_0_t50_preds.jpg)       |  ![](img/Heat_armadillo_EMAN_0_t50_preds.jpg)         |  ![](img/Heat_armadillo_Hermes_0_t50_preds.jpg)           | ![](img/Heat_armadillo_Hermes_0_t50_gt.jpg)                  |
-| Wave (T+50)        | ![](img/Wave_urn_GemCNN_0_t50_preds.jpg) | ![](img/Wave_urn_EMAN_0_t50_preds.jpg) | ![](img/Wave_urn_Hermes_0_t50_preds.jpg) | ![](img/Wave_urn_Hermes_0_t50_gt.jpg) 
-| Cahn-Hilliard (T+50)        | ![](img/Cahn-Hilliard_supertoroid_GemCNN_0_t50_preds.jpg) | ![](img/Cahn-Hilliard_supertoroid_EMAN_0_t50_preds.jpg) | ![](img/Cahn-Hilliard_supertoroid_Hermes_0_t50_preds.jpg) | ![](img/Cahn-Hilliard_supertoroid_Hermes_0_t50_gt.jpg) |
+<div class="gif-container">
+    <figure>
+        <img src="img/gifs/ch_gemcnn.gif" alt="ch_gemcnn">
+        <figcaption> GemCNN</figcaption>
+    </figure>
+    <figure>
+        <img src="img/gifs/ch_eman.gif" alt="ch_eman">
+        <figcaption> EMAN</figcaption>
+    </figure>
+    <figure>
+        <img src="img/gifs/ch_hermes.gif" alt="ch_hermes">
+        <figcaption> Hermes</figcaption>
+    </figure>
+    <figure>
+        <img src="img/gifs/ch_gt.gif" alt="ch_gt">
+        <figcaption> Ground Truth</figcaption>
+    </figure>
+</div>
+Here are some qualitative samples generated autogressively for 50 timesteps given only the initial conditions. GemCNN diverges on Heat and EMAN diverges on Cahn-Hilliard, while Hermes gives fairly realistic rollouts.
 
-When we generate rollouts given only initial conditions, Hermes can produce realistic predictions and predict general spatial patterns well.
+<!--  -->
+<!-- | Dataset | GemCNN | EMAN | Hermes | Ground Truth | -->
+<!-- |---------|--------|------|--------|--------------| -->
+<!-- | Heat (T+50)        | ![](img/Heat_armadillo_GemCNN_0_t50_preds.jpg)       |  ![](img/Heat_armadillo_EMAN_0_t50_preds.jpg)         |  ![](img/Heat_armadillo_Hermes_0_t50_preds.jpg)           | ![](img/Heat_armadillo_Hermes_0_t50_gt.jpg)                  | -->
+<!-- | Wave (T+50)        | ![](img/Wave_urn_GemCNN_0_t50_preds.jpg) | ![](img/Wave_urn_EMAN_0_t50_preds.jpg) | ![](img/Wave_urn_Hermes_0_t50_preds.jpg) | ![](img/Wave_urn_Hermes_0_t50_gt.jpg)  -->
+<!-- | Cahn-Hilliard (T+50)        | ![](img/Cahn-Hilliard_supertoroid_GemCNN_0_t50_preds.jpg) | ![](img/Cahn-Hilliard_supertoroid_EMAN_0_t50_preds.jpg) | ![](img/Cahn-Hilliard_supertoroid_Hermes_0_t50_preds.jpg) | ![](img/Cahn-Hilliard_supertoroid_Hermes_0_t50_gt.jpg) | -->
 
 ## Video
 <div style="text-align:center">
@@ -151,12 +238,12 @@ When we generate rollouts given only initial conditions, Hermes can produce real
 {% raw %}
 ```
 @inproceedings{
-park2023modeling,
-title={Modeling Dynamics over Meshes with Gauge Equivariant Nonlinear Message Passing},
-author={Park, Jung Yeon and Wong, Lawson L.S. and Walters, Robin},
-booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
-year={2023},
-url={https://arxiv.org/abs/2310.19589}
+  park2023modeling,
+  title={Modeling Dynamics over Meshes with Gauge Equivariant Nonlinear Message Passing},
+  author={Park, Jung Yeon and Wong, Lawson L.S. and Walters, Robin},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2023},
+  url={https://arxiv.org/abs/2310.19589}
 }
 ```
 {% endraw %}
