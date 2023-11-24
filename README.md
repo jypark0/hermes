@@ -1,12 +1,26 @@
 # Modeling Dynamics over Meshes with Gauge Equivariant Message Passing
 
-Official implementation of `Modeling Dynamics over Meshes with Gauge Equivariant Message Passing`.
+This repo is the official implementation of the NeurIPS 2023 paper [Modeling Dynamics over Meshes with Gauge Equivariant Message Passing](https://arxiv.org/abs/2310.19589).
+
+Project website: https://jypark0.github.io/hermes/
+
+If you find this repo useful, please cite
+```
+@inproceedings{
+  park2023modeling,
+  title={Modeling Dynamics over Meshes with Gauge Equivariant Nonlinear Message Passing},
+  author={Park, Jung Yeon and Wong, Lawson L.S. and Walters, Robin},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2023},
+  url={https://arxiv.org/abs/2310.19589}
+}
+```
 
 ## Acknowledgements
 
 The repo was built on top of the official [EMAN](https://github.com/gallego-posada/eman) and [GemCNN](https://github.com/Qualcomm-AI-research/gauge-equivariant-mesh-cnn) repos but was heavily modified. Please see `LICENSE_EMAN` for code relating to EMAN and `LICENSE_GemCNN` for code relating to GemCNN.
 
-## Requirements
+## Installation
 
 Install the system dependencies first (`cmake` for openmesh, `gfortran` for escnn). The commands listed below are for Ubuntu 22.04.
 
@@ -20,13 +34,11 @@ To install the python dependencies, run the following commands. You may need to 
 pip install -r requirements.txt
 ```
 
-This was code was tested on the following specs:
+This code was tested on the following specs:
 * Ubuntu 22.04
 * Python 3.10
 * PyTorch 1.13.1
 * PyTorch Geometric 2.3.1
-
-## Usage
 
 This repo uses [Hydra](https://hydra.cc/) for config management (yaml files are inside `conf/`).  See `conf/backbone` to see possible backbones (GemCNN, EMAN, Hermes), `conf/dataset` to see possible datasets, and `conf/dataset_backbone` to see dataset-specific backbone parameters.
 
@@ -40,7 +52,7 @@ pip install -e .
 
 ## Datasets
 
-The datasets folder is `data/` and the raw data should be placed in `data/<Dataset name>/raw` for each dataset.
+The datasets are stored under `data/` and the raw data should be placed in `data/<Dataset name>/raw` for each dataset. We provide scripts to generate the heat, wave, and object interaction datasets.
 
 <details><summary>Details</summary>
 
@@ -90,9 +102,9 @@ Additionally, you can run the mesh fineness and roughness experiments by setting
 
 Pretrained model checkpoints are provided in `pretrained_checkpoints` for all datasets for GemCNN, EMAN, and Hermes.
 
-## Evaluation on rollouts
+## Evaluation
 
-Using the pretrained model checkpoints, you can generate prediction rollouts for the PDE datasets. Run the command:
+Using the pretrained model checkpoints, you can generate autoregressive prediction rollouts for the PDE datasets. Run the command:
 
 ```
 python experiments/eval_rollout.py dataset=heat backbone=hermes model_save_path=pretrained_checkpoints/Heat_Hermes_model.pt
